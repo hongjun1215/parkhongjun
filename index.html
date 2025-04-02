@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>안전한 비비탄 게임</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black; /* 배경 어둡게 */
+            color: white;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .player {
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            margin: 20px;
+            border: 2px solid white;
+            position: relative;
+        }
+        .user {
+            background-color: green; /* 사용자 초록색 */
+        }
+        .ai {
+            background-color: yellow; /* AI 노란색 */
+        }
+        .crack {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent 0,
+                transparent 2px,
+                black 2px,
+                black 4px
+            );
+            z-index: 1; /* 금이 가는 효과 위로 표시 */
+            pointer-events: none; /* 클릭 방지 */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: gray;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>안전한 비비탄 게임 (15세 이상)</h1>
+    <p>룰렛을 돌려 비비탄을 맞을 상대를 결정하세요!</p>
+    <div>
+        <div id="user" class="player user"></div>
+        <div id="ai" class="player ai"></div>
+    </div>
+    <button id="spinButton">룰렛 돌리기</button>
+    <p class="message" id="result"></p>
+
+    <script>
+        // 나이 제한 알림
+        alert("이 게임은 만 15세 이상만 플레이 가능합니다!");
+
+        const userElement = document.getElementById('user');
+        const aiElement = document.getElementById('ai');
+
+        let userHits = 0; // 유저 피격 횟수
+        let aiHits = 0;   // AI 피격 횟수
+
+        document.getElementById('spinButton').addEventListener('click', function() {
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = "룰렛이 돌고 있습니다...";
+
+            // 5초간 긴장감 주기
+            setTimeout(function() {
+                // 플레이어 목록
+                const players = [
+                    { name: "당신", element: userElement, hits: () => userHits++ },
+                    { name: "AI", element: aiElement, hits: () => aiHits++ }
+                ];
+
+                // 랜덤으로 플레이어 선택
+                const randomIndex = Math.floor(Math.random() * players.length);
+                const selectedPlayer = players[randomIndex];
+
+                // 피격 효과 추가
+                const crack = document.createElement('div');
+                crack.className = 'crack';
+                selectedPlayer.element.appendChild(crack);
+
+                // 결과 메시지 출력
+                const resultMessage = `${selectedPlayer.name}가 비비탄을 맞았습니다!`;
+                resultElement.textContent = resultMessage;
+
+                // 게임 종료 조건
+                if (userHits >= 3) {
+                    alert("당신이 패배했습니다! 게임 종료.");
+                } else if (aiHits >= 3) {
+                    alert("AI가 패배했습니다! 축하합니다!");
+                }
+            }, 5000); // 5초 대기 후 결과 출력
+        });
+    </script>
+</body>
+</html>
